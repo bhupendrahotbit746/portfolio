@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050308;
+  --surface: #0d0812;
+  --surface-2: #140b1f;
+  --border: #241531;
+  --foreground: #f2eefa;
+  --muted: #8a7fa0;
+  --violet: #8b5cf6;
+  --violet-bright: #a78bfa;
+  --violet-dim: #4c2f8c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-violet: var(--violet);
+  --color-violet-bright: var(--violet-bright);
+  --color-violet-dim: var(--violet-dim);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--violet);
+  color: #050308;
+}
+
+.text-glow {
+  text-shadow: 0 0 24px rgba(139, 92, 246, 0.45);
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
