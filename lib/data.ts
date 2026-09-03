@@ -21,10 +21,11 @@ export const profile = {
 };
 
 export const navItems = [
-  { id: "profile", index: "01", label: "PROFILE" },
-  { id: "experience", index: "02", label: "EXPERIENCE" },
-  { id: "stack", index: "03", label: "STACK" },
-  { id: "contact", index: "04", label: "CONTACT" },
+  { id: "profile", index: "01", label: "PROFILE", href: "/#profile" },
+  { id: "experience", index: "02", label: "EXPERIENCE", href: "/#experience" },
+  { id: "stack", index: "03", label: "STACK", href: "/#stack" },
+  { id: "blog", index: "04", label: "BLOG", href: "/#writing" },
+  { id: "contact", index: "05", label: "CONTACT", href: "/#contact" },
 ];
 
 export const skillsCarousel = [

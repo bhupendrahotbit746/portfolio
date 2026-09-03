@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getLatestPublishedPosts, readingTimeFromContent } from "@/lib/blog";
+import { formatDate } from "@/lib/format-date";
 
 export default async function Writing() {
   const posts = await getLatestPublishedPosts(3);
@@ -13,7 +14,7 @@ export default async function Writing() {
           &#9670; LATEST WRITING
         </p>
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Field notes from production
+          Insights &amp; articles
         </h2>
 
         <div className="mt-12">
@@ -59,11 +60,4 @@ export default async function Writing() {
       </div>
     </section>
   );
-}
-
-function formatDate(iso: string): string {
-  if (!iso) return "";
-  return new Date(iso)
-    .toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
-    .toUpperCase();
 }

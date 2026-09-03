@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import SiteShell from "../../components/SiteShell";
 import {
   getPublishedPostBySlug,
   getPublishedPosts,
   readingTimeFromContent,
 } from "@/lib/blog";
 import { profile } from "@/lib/data";
+import { formatDate } from "@/lib/format-date";
 
 export const dynamic = "force-dynamic";
 
@@ -40,20 +40,23 @@ export default async function BlogPostPage({
   const { slug } = await params;
 
   let post;
-  let allPosts;
   try {
     post = await getPublishedPostBySlug(slug);
-    if (!post) notFound();
-    allPosts = await getPublishedPosts();
   } catch (error) {
     console.error("Failed to load post:", error);
     notFound();
   }
+  if (!post) notFound();
+
+  const allPosts = await getPublishedPosts().catch((error) => {
+    console.error("Failed to load post list for index:", error);
+    return [];
+  });
 
   const index = allPosts.findIndex((p) => p.id === post.id) + 1;
 
   return (
-    <SiteShell>
+    <>
       <article className="border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
           <Link
@@ -79,6 +82,15 @@ export default async function BlogPostPage({
             {formatDate(post.createdAt)} &middot; {readingTimeFromContent(post.content).toUpperCase()}
           </p>
 
+          {post.coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={post.coverImage}
+              alt=""
+              className="mt-12 aspect-[16/7] w-full object-cover opacity-85"
+            />
+          )}
+
           {post.tags.length > 0 && (
             <p className="mt-3 font-mono text-xs tracking-widest text-violet-bright/80">
               {post.tags.map((t) => t.toUpperCase()).join(" · ")}
@@ -101,13 +113,7 @@ export default async function BlogPostPage({
           </div>
         </div>
       </article>
-    </SiteShell>
+    </>
   );
 }
 
-function formatDate(iso: string): string {
-  if (!iso) return "";
-  return new Date(iso)
-    .toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
-    .toUpperCase();
-}

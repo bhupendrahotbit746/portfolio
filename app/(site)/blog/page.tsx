@@ -1,14 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import SiteShell from "../components/SiteShell";
 import { getPublishedPosts, readingTimeFromContent } from "@/lib/blog";
 import type { BlogPost } from "@/lib/blog-types";
 import { profile } from "@/lib/data";
+import { formatDate } from "@/lib/format-date";
 
 export const metadata: Metadata = {
   title: `Writing — ${profile.nameFirst} ${profile.nameLast}`,
   description:
-    "Engineering notes, architecture decisions, and lessons from building production systems.",
+    "Informative articles and insights on web development, engineering, and technology.",
 };
 
 export const dynamic = "force-dynamic";
@@ -27,7 +27,7 @@ export default async function BlogIndexPage() {
   const postsByYear = groupByYear(posts);
 
   return (
-    <SiteShell>
+    <>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
           <p className="mb-4 font-mono text-xs tracking-widest text-violet">
@@ -37,8 +37,8 @@ export default async function BlogIndexPage() {
             WRITING_/
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/75 sm:text-lg">
-            Engineering notes, architecture decisions, experiments, and
-            lessons from building products.
+            Informative articles and insights on web development,
+            engineering, and technology.
           </p>
 
           {loadFailed ? (
@@ -77,6 +77,15 @@ export default async function BlogIndexPage() {
                           {post.title}
                         </h2>
 
+                        {post.coverImage && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={post.coverImage}
+                            alt=""
+                            className="mt-5 aspect-[16/7] w-full object-cover opacity-80"
+                          />
+                        )}
+
                         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/75">
                           {post.description}
                         </p>
@@ -95,7 +104,7 @@ export default async function BlogIndexPage() {
           )}
         </div>
       </section>
-    </SiteShell>
+    </>
   );
 }
 
@@ -110,9 +119,3 @@ function groupByYear(posts: BlogPost[]): [string, BlogPost[]][] {
   return Array.from(groups.entries());
 }
 
-function formatDate(iso: string): string {
-  if (!iso) return "";
-  return new Date(iso)
-    .toLocaleDateString("en-US", { month: "short", day: "2-digit" })
-    .toUpperCase();
-}

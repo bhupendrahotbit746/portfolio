@@ -28,9 +28,11 @@ export default function PostForm({ initialPost }: PostFormProps) {
   const [description, setDescription] = useState(initialPost?.description ?? "");
   const [category, setCategory] = useState(initialPost?.category ?? "");
   const [tagsInput, setTagsInput] = useState(initialPost?.tags.join(", ") ?? "");
+  const [coverImage, setCoverImage] = useState(initialPost?.coverImage ?? "");
   const [content, setContent] = useState(initialPost?.content ?? "");
   const [published, setPublished] = useState(initialPost?.published ?? false);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function handleTitleChange(value: string) {
@@ -54,6 +56,7 @@ export default function PostForm({ initialPost }: PostFormProps) {
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
+      coverImage: coverImage.trim(),
       content,
       published,
     };
@@ -146,6 +149,53 @@ export default function PostForm({ initialPost }: PostFormProps) {
         </Field>
       </div>
 
+      <Field label="Cover image (optional)">
+        <div className="space-y-3">
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            disabled={uploadingImage || saving}
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              setUploadingImage(true);
+              setError(null);
+              const token = await getIdToken();
+              if (!token) {
+                setError("Not signed in.");
+                setUploadingImage(false);
+                return;
+              }
+
+              const formData = new FormData();
+              formData.append("file", file);
+              const res = await fetch("/api/uploads/image", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+              });
+
+              const body = await res.json().catch(() => ({}));
+              setUploadingImage(false);
+              if (!res.ok) {
+                setError(body.error ?? "Failed to upload image.");
+                return;
+              }
+              setCoverImage(body.url);
+            }}
+            className="block w-full border border-border bg-background px-3 py-2 text-sm text-foreground file:mr-3 file:border-0 file:bg-violet-dim file:px-3 file:py-1 file:font-mono file:text-xs file:text-foreground"
+          />
+          <p className="font-mono text-xs text-muted">
+            {uploadingImage ? "UPLOADING…" : coverImage ? "IMAGE READY" : "JPG, PNG, WEBP OR GIF · MAX 5MB"}
+          </p>
+          {coverImage && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={coverImage} alt="Cover preview" className="aspect-[16/7] w-full object-cover" />
+          )}
+        </div>
+      </Field>
+
       <Field label="Content">
         <textarea
           value={content}
@@ -171,7 +221,7 @@ export default function PostForm({ initialPost }: PostFormProps) {
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || uploadingImage}
           className="rounded border border-violet-dim px-5 py-2 font-mono text-xs tracking-widest text-violet-bright transition-colors hover:border-violet disabled:opacity-50"
         >
           {saving ? "SAVING…" : isEditing ? "SAVE CHANGES" : "CREATE POST"}

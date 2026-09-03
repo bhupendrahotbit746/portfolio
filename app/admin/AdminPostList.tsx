@@ -46,17 +46,24 @@ export default function AdminPostList() {
   async function handleDelete(id: string) {
     if (!confirm("Delete this post? This cannot be undone.")) return;
     setDeletingId(id);
-    const token = await getIdToken();
-    const res = await fetch(`/api/posts/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setDeletingId(null);
-    if (res.ok) {
-      setPosts((prev) => prev?.filter((p) => p.id !== id) ?? null);
-    } else {
-      const body = await res.json().catch(() => ({}));
-      setError(body.error ?? "Failed to delete post.");
+    try {
+      const token = await getIdToken();
+      if (!token) {
+        setError("Not signed in.");
+        return;
+      }
+      const res = await fetch(`/api/posts/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setPosts((prev) => prev?.filter((p) => p.id !== id) ?? null);
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setError(body.error ?? "Failed to delete post.");
+      }
+    } finally {
+      setDeletingId(null);
     }
   }
 

@@ -14,6 +14,7 @@ export function validatePostInput(body: unknown): BlogPostInput {
   const description = String(b.description ?? "").trim();
   const content = String(b.content ?? "");
   const category = String(b.category ?? "").trim();
+  const coverImage = String(b.coverImage ?? "").trim();
   const tags = Array.isArray(b.tags) ? b.tags.map((t) => String(t).trim()).filter(Boolean) : [];
   const published = Boolean(b.published);
 
@@ -25,5 +26,5 @@ export function validatePostInput(body: unknown): BlogPostInput {
   if (!content.trim()) throw new Error("Content is required.");
   if (!category) throw new Error("Category is required.");
 
-  return { slug, title, description, content, category, tags, published };
+  return { slug, title, description, content, category, tags, coverImage, published };
 }
