@@ -1,0 +1,62 @@
+---
+title: "The Prefetch Bug That Logged Everyone Out"
+description: "How Next.js Link prefetching quietly hit a GET-accessible logout route in production — and the CSRF-adjacent class of bug it revealed."
+date: "2026-06-14"
+category: "Frontend Engineering"
+tags:
+  - Next.js
+  - Security
+  - App Router
+featured: false
+coverImage: "/blog/the-prefetch-bug-that-logged-everyone-out/cover.webp"
+---
+
+Users on the Bet On Talent member portal were getting logged out for no visible reason. No error, no crash — just a session that was suddenly gone. It didn't reproduce on demand, which is usually the first sign that the bug isn't in the code you're looking at.
+
+## Ruling out the obvious
+
+The first suspects were the usual ones: token expiry, a race condition in the auth refresh flow, a cookie getting clobbered by a stale service worker. None of them held up under load testing — sessions were dying on routes that had nothing to do with auth at all.
+
+The pattern that finally mattered: it only happened on pages with a `<Link>` pointing at `/logout`.
+
+## What Next.js was actually doing
+
+The App Router prefetches `<Link>` destinations automatically, ahead of any click, so navigation feels instant. That's the right default for almost every route in an app — but `/logout` wasn't a page. It was a GET route that revoked the session token as a side effect of being requested.
+
+Next.js had no way to know that. It saw a link, it prefetched the destination, and the destination happened to log the user out as a side effect of loading. The bug wasn't in the prefetch — it was in treating a destructive action as something safe to GET.
+
+<BlogImage
+  src="/blog/the-prefetch-bug-that-logged-everyone-out/request-flow.webp"
+  alt="A Link component triggers an automatic prefetch, which hits GET /logout and revokes the session"
+  caption="Three steps, none of them a user click."
+/>
+
+```ts
+// before — a side effect hiding behind a GET
+export async function GET(request: Request) {
+  await revokeSession(request)
+  return redirect('/login')
+}
+```
+
+Any `<Link href="/logout">` anywhere in the tree was enough to trigger it, invisibly, the moment the link scrolled into view.
+
+## Why this is bigger than one route
+
+A GET-accessible destructive action isn't just fragile against prefetching — it's the same shape of bug as a CSRF vulnerability. Anything that can cause a browser to issue a GET request to your domain (an `<img>` tag, a stale bookmark, a crawler) can trigger it too. Prefetching just made it happen constantly enough to notice.
+
+The fix wasn't a prefetch flag or a workaround. It was moving every destructive action off GET entirely:
+
+```ts
+// after — logout is a real action, not a page load
+export async function POST(request: Request) {
+  await revokeSession(request)
+  return NextResponse.json({ ok: true })
+}
+```
+
+Logout became a client-triggered `POST` from an explicit button handler, not something reachable by navigating anywhere.
+
+## The actual lesson
+
+The specific bug was Next.js prefetching. The general one is older than the App Router: **if an HTTP GET can change state, something downstream will eventually call it by accident** — a prefetcher, a proxy, a browser extension, a bot. Idempotent methods should stay idempotent, and every destructive action in the API got audited against that rule, not just the one that happened to get caught.

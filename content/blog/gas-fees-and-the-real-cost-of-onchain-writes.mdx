@@ -1,0 +1,64 @@
+---
+title: "Gas Fees and the Real Cost of On-Chain Writes"
+description: "What building a decentralized NFT marketplace taught me about treating gas cost as a design constraint, not an afterthought."
+date: "2026-04-02"
+category: "Web3"
+tags:
+  - Solidity
+  - Ethereum
+  - IPFS
+featured: false
+coverImage: "/blog/gas-fees-and-the-real-cost-of-onchain-writes/cover.webp"
+---
+
+Every write to a smart contract costs the user real money. That sentence sounds obvious written down, but it changes almost every design decision compared to a normal web app, where a database write is effectively free and nobody thinks twice about an extra column.
+
+Building a decentralized NFT marketplace across Ethereum and Binance Smart Chain meant that gas cost wasn't a performance metric to check later — it was a constraint on the API surface from day one.
+
+## Storage is the expensive part
+
+The instinct coming from a typical backend is to store everything that's even slightly relevant on-chain, the same way you'd add a field to a Postgres table because it might be useful. On-chain storage doesn't work that way — every 32-byte slot you write costs gas, permanently, whether or not anyone ever reads it again.
+
+The fix was to draw a hard line between what has to be on-chain (ownership, transfer history, royalty terms — the things that need the chain's guarantees) and what doesn't (images, metadata, descriptions — the things that just need to be verifiable and available).
+
+```solidity
+// store a reference, not the asset
+struct Listing {
+    address seller;
+    uint256 price;
+    string metadataURI; // ipfs://... — not the JSON itself
+}
+```
+
+## Where IPFS actually earns its place
+
+Metadata and media went to IPFS instead of on-chain storage. The contract only ever holds a URI — a fixed-size reference — no matter how large the underlying asset is. That's the whole trick: content-addressed storage means the hash *is* the integrity check, so the chain doesn't need to hold the content to guarantee it hasn't been tampered with.
+
+The practical payoff was direct: minting an NFT with a 4K image and a paragraph of metadata cost the same gas as minting one with a single-pixel placeholder, because the contract never touched the bytes of either.
+
+<BlogImage
+  src="/blog/gas-fees-and-the-real-cost-of-onchain-writes/storage-split.webp"
+  alt="On-chain storage holds only ownership and a metadata URI; media and JSON metadata live on IPFS"
+  caption="The contract stores a reference. IPFS stores the bytes."
+/>
+
+## Batching instead of looping
+
+The other place gas discipline showed up was anywhere a user might want to do the same action multiple times — listing several items, or fulfilling several offers. A naive loop of individual transactions means paying the fixed overhead cost of a transaction *N* times.
+
+```solidity
+function batchList(
+    uint256[] calldata tokenIds,
+    uint256[] calldata prices
+) external {
+    for (uint256 i = 0; i < tokenIds.length; i++) {
+        _list(tokenIds[i], prices[i]);
+    }
+}
+```
+
+One transaction, one base fee, N listings. It's a small change in the contract and a large one in what the transaction actually costs the person using it.
+
+## What carried over
+
+None of this is Web3-specific advice, really. It's the same discipline as designing an API where every field has a storage and bandwidth cost — it's just that on-chain, that cost is denominated in money the user pays directly, in front of them, before they click confirm. That visibility made it impossible to ignore, which turned out to be a useful forcing function even outside of blockchain work.

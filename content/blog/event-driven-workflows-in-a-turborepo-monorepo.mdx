@@ -1,0 +1,67 @@
+---
+title: "Event-Driven Workflows in a Turborepo Monorepo"
+description: "Notes on keeping long-running work off the request path across an 11-app monorepo with Trigger.dev."
+date: "2026-09-03"
+category: "Backend Architecture"
+tags:
+  - Trigger.dev
+  - Turborepo
+  - Backend
+featured: true
+coverImage: "/blog/event-driven-workflows-in-a-turborepo-monorepo/cover.webp"
+---
+
+Most of the interesting bugs in a marketplace product don't happen in the request/response cycle. They happen in the gap between "the user did something" and "the system finished reacting to it" — a webhook that arrives out of order, a nightly sync that half-completes, a batch of messages that needs to go out without blocking the page that triggered them.
+
+## The shape of the problem
+
+Nutcake is a three-sided marketplace — brands, creators, and talent agencies — spread across 11 TypeScript/Next.js applications in a single pnpm/Turborepo monorepo. Each app owns a slice of the same domain model: a brand's campaign (a **Mission**) fans out into individually tracked creator agreements (**Deal Memos**), each moving through its own commercial and delivery status ladder.
+
+A lot of that movement isn't something a user is sitting there waiting on. CRM sync, batched creator messaging, nightly reconciliation jobs, social-media scraping — none of it should live inside an API route's request handler, and none of it should silently fail without anyone noticing.
+
+## Where Trigger.dev fits
+
+We moved this class of work onto [Trigger.dev](https://trigger.dev) — async, event- and schedule-driven jobs that run outside the request/response cycle entirely. The API route's only job is to enqueue the work and return; the job itself runs, retries, and reports independently.
+
+That split matters more than it sounds like it should. It means:
+
+- A webhook handler stays fast and small, because it isn't the thing doing the actual work.
+- A failed sync doesn't take down the page that kicked it off.
+- Retries and backoff are the job runner's problem, not something re-implemented per route.
+
+<BlogImage
+  src="/blog/event-driven-workflows-in-a-turborepo-monorepo/architecture.webp"
+  alt="Request path handing off to Trigger.dev, which fans out to HubSpot, PandaDoc, and Twilio"
+  caption="The request path only enqueues work — the job runner owns retries and the third-party layer."
+/>
+
+## Wrapping third-party integrations once
+
+Nutcake's third-party layer is wide — HubSpot for CRM sync, Stripe for payouts, PandaDoc for e-signature contracts, Clerk for auth, Twilio/Resend/SendGrid for creator messaging, Meilisearch for search. Every one of those is a plausible failure point, and every one of them gets called from more than one app in the monorepo.
+
+The fix was boring but important: wrap each integration once as a shared client, consumed the same way from every app. When PandaDoc changes an API shape or Stripe rotates a webhook secret, there's exactly one place that needs to change — not eleven.
+
+```ts
+// packages/integrations/pandadoc.ts
+export async function createContractFromDealMemo(dealMemo: DealMemo) {
+  const client = getPandaDocClient()
+
+  return client.documents.create({
+    template_uuid: dealMemo.contractTemplateId,
+    recipients: dealMemo.recipients,
+    tokens: buildContractTokens(dealMemo),
+  })
+}
+```
+
+Every app that needs to generate a contract calls the same function. The Trigger.dev job that reacts to a Deal Memo reaching the "ready to sign" status doesn't know or care that it's PandaDoc under the hood — it just calls `createContractFromDealMemo`.
+
+## What actually made this reliable
+
+A few things mattered more than the framework choice itself:
+
+1. **Idempotency by default.** Nightly sync jobs run on a schedule and can overlap with manual retries. Every job is written to be safe to run twice.
+2. **One shared client per integration**, not one per app — so a broken assumption gets fixed once.
+3. **Jobs report state back into the same domain model** the UI reads from, so a stuck Deal Memo is visible in the product, not just in a job runner's dashboard.
+
+None of this is exotic. It's the same lesson every backend eventually learns: the request path should do as little as possible, and everything else should be observable, retryable, and boring.
