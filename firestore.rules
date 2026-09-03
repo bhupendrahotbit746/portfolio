@@ -1,0 +1,14 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public can only read published posts.
+    // All writes go through the server (Admin SDK via /api/posts),
+    // which bypasses these rules entirely — this is a client-read safeguard,
+    // not the primary write authorization mechanism.
+    match /posts/{postId} {
+      allow read: if resource.data.published == true;
+      allow write: if false;
+    }
+  }
+}
