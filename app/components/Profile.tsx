@@ -22,7 +22,7 @@ function escapeRegExp(value: string) {
 export default function Profile() {
   return (
     <section id="profile" className="border-b border-border">
-      <div className="mx-auto min-h-[calc(100vh-6rem)] max-w-[1380px] px-6 py-12 sm:px-10 lg:py-16">
+      <div className="mx-auto min-h-[calc(100vh-6rem)] max-w-6xl px-6 py-12 sm:px-10 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 xl:gap-20">
           <div className="pt-6 lg:pt-16">
             <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.35em] text-violet-bright">
