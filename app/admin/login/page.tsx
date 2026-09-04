@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { getFirebaseAuth, googleProvider } from "@/lib/firebase-client";
-import { useAdminAuth } from "../useAdminAuth";
+import { isAdminUser, useAdminAuth } from "../useAdminAuth";
 
 export default function AdminLoginPage() {
   const { user, loading } = useAdminAuth();
@@ -16,7 +16,12 @@ export default function AdminLoginPage() {
     setError(null);
     setSigningIn(true);
     try {
-      await signInWithPopup(getFirebaseAuth(), googleProvider);
+      const result = await signInWithPopup(getFirebaseAuth(), googleProvider);
+      if (!isAdminUser(result.user)) {
+        await signOut(getFirebaseAuth());
+        setError("This account is not authorized.");
+        return;
+      }
       router.push("/admin");
     } catch {
       setError("Sign-in failed. Try again.");
