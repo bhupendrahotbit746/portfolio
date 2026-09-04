@@ -16,7 +16,7 @@ export default function Stack() {
     <section id="stack" className="border-b border-border">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
         <p className="mb-3 font-mono text-xs tracking-widest text-violet">
-          03 / STACK
+          04 / STACK
         </p>
         <h2 className="mb-12 text-4xl font-black tracking-tight sm:text-5xl">
           TOOLS I THINK IN
