@@ -5,7 +5,7 @@ export default function Experience() {
     <section id="experience" className="border-b border-border">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
         <p className="mb-6 font-mono text-xs tracking-widest text-violet">
-          02 / EXPERIENCE
+          03 / EXPERIENCE
         </p>
 
         <h2 className="text-5xl font-bold tracking-tight sm:text-6xl">

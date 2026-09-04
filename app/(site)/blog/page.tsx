@@ -30,7 +30,14 @@ export default async function BlogIndexPage() {
     <>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
-          <p className="mb-4 font-mono text-xs tracking-widest text-violet">
+          <Link
+            href="/"
+            className="font-mono text-xs tracking-widest text-muted transition-colors hover:text-violet-bright"
+          >
+            &#8592; HOME
+          </Link>
+
+          <p className="mt-8 mb-4 font-mono text-xs tracking-widest text-violet">
             &#9670; WRITING
           </p>
           <h1 className="text-4xl font-black tracking-tight sm:text-5xl">
