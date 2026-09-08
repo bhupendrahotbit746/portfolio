@@ -6,10 +6,34 @@ import type { BlogPost } from "@/lib/blog-types";
 import { readingTimeFromContent } from "@/lib/blog-types";
 import { formatDate } from "@/lib/format-date";
 
-const VISIBLE = 3;
 const AUTO_SLIDE_MS = 2000;
 
+// Matches the card widths below: max-sm:w-full, sm:w-1/2, lg:w-1/3.
+function useVisibleCount() {
+  const [visible, setVisible] = useState(3);
+
+  useEffect(() => {
+    const query640 = window.matchMedia("(min-width: 640px)");
+    const query1024 = window.matchMedia("(min-width: 1024px)");
+
+    const update = () => {
+      setVisible(query1024.matches ? 3 : query640.matches ? 2 : 1);
+    };
+
+    update();
+    query640.addEventListener("change", update);
+    query1024.addEventListener("change", update);
+    return () => {
+      query640.removeEventListener("change", update);
+      query1024.removeEventListener("change", update);
+    };
+  }, []);
+
+  return visible;
+}
+
 export default function BlogCarousel({ posts }: { posts: BlogPost[] }) {
+  const VISIBLE = useVisibleCount();
   const count = posts.length;
   const canSlide = count > VISIBLE;
 
@@ -26,6 +50,10 @@ export default function BlogCarousel({ posts }: { posts: BlogPost[] }) {
   const [index, setIndex] = useState(0);
   const [withTransition, setWithTransition] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    setWithTransition(false);
+  }, [VISIBLE]);
 
   const startAutoSlide = useCallback(() => {
     if (!canSlide) return;

@@ -35,12 +35,12 @@ export default function SystemCard({ item, index, total }: SystemCardProps) {
         </span>
       </div>
 
-      <h3 className="mt-6 h-[2.4em] text-4xl font-bold leading-[1.2em] tracking-tight sm:text-5xl">
+      <h3 className="mt-6 min-h-[2.4em] text-4xl font-bold leading-[1.2em] tracking-tight sm:text-5xl">
         {titleOut}
         {!titleDone && <Cursor />}
       </h3>
 
-      <p className="mt-6 h-[6em] max-w-lg text-xl leading-[1.5em] text-foreground/80">
+      <p className="mt-6 min-h-[6em] max-w-lg text-xl leading-[1.5em] text-foreground/80">
         {descOut}
         {titleDone && <Cursor />}
       </p>
@@ -84,24 +84,24 @@ export default function SystemCard({ item, index, total }: SystemCardProps) {
           </div>
         </div>
 
-        <div className="mt-8 flex items-center justify-between">
-          <span className="text-xs tracking-widest text-muted">
+        <div className="mt-8 flex items-center gap-3">
+          <span className="shrink-0 text-xs tracking-widest text-muted">
             SEL {String(index + 1).padStart(2, "0")} /{" "}
             {String(total).padStart(2, "0")}
           </span>
 
-          <div className="flex items-center gap-[3px]">
+          <div className="flex min-w-0 flex-1 items-center gap-[3px] overflow-x-auto">
             {Array.from({ length: total }).map((_, i) => (
               <span
                 key={i}
-                className={`h-3 w-[3px] ${
+                className={`h-3 w-[3px] shrink-0 ${
                   i === index ? "bg-violet-bright" : "bg-border"
                 }`}
               />
             ))}
           </div>
 
-          <span className="flex items-center gap-1.5 text-xs tracking-widest text-violet-bright">
+          <span className="flex shrink-0 items-center gap-1.5 text-xs tracking-widest text-violet-bright">
             <span className="h-1.5 w-1.5 rounded-full bg-violet animate-blink" />
             LIVE
           </span>
