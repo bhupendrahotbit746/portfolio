@@ -30,53 +30,55 @@ export default function Hero() {
           {profile.tagline}
         </p>
 
-        <div className="mt-16 grid gap-10 border-t border-border pt-8 sm:grid-cols-3">
-          <div>
-            <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted">
-              Location
-            </h2>
-            <p className="mt-2 text-sm text-foreground/90">{profile.location}</p>
-          </div>
-          <div>
-            <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted">
-              Availability
-            </h2>
-            <p className="mt-2 text-sm text-foreground/90">{profile.availability}</p>
-          </div>
-          <div>
-            <h2 className="font-mono text-[11px] uppercase tracking-widest text-muted">
-              Signals
-            </h2>
-            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs tracking-widest">
-              <a
-                href={profile.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-violet-bright hover:text-violet"
-              >
-                GitHub &#8599;
-              </a>
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-violet-bright hover:text-violet"
-              >
-                LinkedIn &#8599;
-              </a>
-              <a
-                href={`mailto:${profile.email}`}
-                className="text-violet-bright hover:text-violet"
-              >
-                Email &#8599;
-              </a>
-              <a
-                href={profile.cvUrl}
-                download
-                className="text-violet-bright hover:text-violet"
-              >
-                CV &#8599;
-              </a>
+        <div className="mt-16 border-t border-border pt-8">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[auto_auto_1fr]">
+            <div>
+              <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+                Location
+              </h2>
+              <p className="mt-2 whitespace-nowrap text-base text-foreground">{profile.location}</p>
+            </div>
+            <div>
+              <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+                Availability
+              </h2>
+              <p className="mt-2 whitespace-nowrap text-base text-foreground">{profile.availability}</p>
+            </div>
+            <div className="mt-10 lg:mt-0">
+              <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+                Signals
+              </h2>
+              <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2 font-mono text-base tracking-widest">
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-violet-bright hover:text-violet"
+                >
+                  GitHub &#8599;
+                </a>
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-violet-bright hover:text-violet"
+                >
+                  LinkedIn &#8599;
+                </a>
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="text-violet-bright hover:text-violet"
+                >
+                  Email &#8599;
+                </a>
+                <a
+                  href={profile.cvUrl}
+                  download
+                  className="text-violet-bright hover:text-violet"
+                >
+                  CV &#8599;
+                </a>
+              </div>
             </div>
           </div>
         </div>

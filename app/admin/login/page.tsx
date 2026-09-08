@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
       <div className="w-full max-w-sm border border-border bg-surface p-8">
-        <p className="font-mono text-xs tracking-widest text-violet">
+        <p className="font-mono text-sm tracking-widest text-violet">
           &#9670; ADMIN
         </p>
         <h1 className="mt-3 text-2xl font-bold tracking-tight text-foreground">

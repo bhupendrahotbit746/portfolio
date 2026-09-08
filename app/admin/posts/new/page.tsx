@@ -6,7 +6,7 @@ export default function NewPostPage() {
     <AdminGate>
       <div className="min-h-screen bg-background px-6 py-16 sm:px-10">
         <div className="mx-auto max-w-2xl">
-          <p className="font-mono text-xs tracking-widest text-violet">
+          <p className="font-mono text-sm tracking-widest text-violet">
             &#9670; ADMIN / NEW POST
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">

@@ -9,7 +9,7 @@ export default function AdminDashboardPage() {
         <div className="mx-auto max-w-4xl">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="font-mono text-xs tracking-widest text-violet">
+              <p className="font-mono text-sm tracking-widest text-violet">
                 &#9670; ADMIN
               </p>
               <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">

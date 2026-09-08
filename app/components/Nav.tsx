@@ -13,12 +13,12 @@ export default function Nav() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 sm:px-10">
         <Link
           href="/"
-          className="font-mono text-sm font-semibold tracking-widest transition-colors hover:text-violet-bright"
+          className="font-mono text-lg font-semibold tracking-[0.2em] text-white transition-colors hover:text-violet-bright sm:text-xl"
         >
           {profile.nameFirst.toUpperCase()} {profile.nameLast.toUpperCase()}
         </Link>
 
-        <nav className="hidden items-center gap-6 font-mono text-xs tracking-widest text-muted sm:flex">
+        <nav className="hidden items-center gap-6 font-mono text-sm tracking-widest sm:flex">
           {navItems.map((item) => {
             const isRoute = !item.href.includes("#");
             const isActive = isRoute && pathname.startsWith(item.href);
@@ -28,7 +28,7 @@ export default function Nav() {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={`transition-colors hover:text-violet-bright ${
-                  isActive ? "text-violet-bright" : ""
+                  isActive ? "text-violet-bright" : "text-white"
                 }`}
               >
                 {item.index} {item.label}

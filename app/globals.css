@@ -7,9 +7,9 @@
   --border: #241531;
   --foreground: #f2eefa;
   --muted: #8a7fa0;
-  --violet: #8b5cf6;
-  --violet-bright: #a78bfa;
-  --violet-dim: #4c2f8c;
+  --violet: #00b8d9;
+  --violet-bright: #00d9ff;
+  --violet-dim: #0a4a56;
 }
 
 @theme inline {
@@ -81,7 +81,7 @@ body {
 }
 
 .text-glow {
-  text-shadow: 0 0 24px rgba(139, 92, 246, 0.45);
+  text-shadow: 0 0 24px rgba(0, 217, 255, 0.45);
 }
 
 @keyframes blink {
@@ -96,4 +96,94 @@ body {
 @keyframes scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+.prose-blog {
+  overflow-wrap: break-word;
+}
+
+.prose-blog > :first-child {
+  margin-top: 0;
+}
+
+.prose-blog p {
+  margin: 1.25em 0;
+}
+
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--foreground);
+  margin: 1.8em 0 0.7em;
+}
+
+.prose-blog h1 { font-size: 1.6em; }
+.prose-blog h2 { font-size: 1.4em; }
+.prose-blog h3 { font-size: 1.15em; }
+.prose-blog h4 { font-size: 1em; }
+
+.prose-blog ul,
+.prose-blog ol {
+  margin: 1.1em 0;
+  padding-left: 1.4em;
+}
+
+.prose-blog ul { list-style: disc; }
+.prose-blog ol { list-style: decimal; }
+
+.prose-blog li {
+  margin: 0.4em 0;
+}
+
+.prose-blog li::marker {
+  color: var(--violet);
+}
+
+.prose-blog blockquote {
+  margin: 1.5em 0;
+  padding: 0.2em 1.2em;
+  border-left: 3px solid var(--violet-dim);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.prose-blog hr {
+  margin: 2.5em 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.prose-blog strong {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.prose-blog table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.prose-blog th,
+.prose-blog td {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+
+.prose-blog th {
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.prose-blog pre {
+  margin: 0;
 }
