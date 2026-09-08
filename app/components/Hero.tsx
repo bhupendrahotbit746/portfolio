@@ -20,7 +20,7 @@ export default function Hero() {
     <section className="relative overflow-hidden border-b border-border">
       <InteractiveGrid />
       <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-20 sm:px-10 sm:pt-28">
-        <h1 className="relative text-[15vw] font-bold leading-[0.9] tracking-tight sm:text-[6.5rem]">
+        <h1 className="relative text-[clamp(2.75rem,13vw,6.5rem)] font-bold leading-[0.9] tracking-tight">
           <span className="pointer-events-none absolute -left-1 -top-3 h-4 w-4 border-l border-t border-violet-bright/70" />
           <span className="block">{first}</span>
           <span className="text-glow block text-violet-bright">{last}</span>

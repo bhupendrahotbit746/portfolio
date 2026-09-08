@@ -22,8 +22,8 @@ export default function Stack() {
           TOOLS I THINK IN
         </h2>
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-14">
-          <div>
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1fr] lg:items-start lg:gap-14">
+          <div className="min-w-0">
             {techStack.map((group, gi) => (
               <div key={group.category} className={gi > 0 ? "mt-10" : ""}>
                 <div className="flex items-baseline justify-between border-b border-border pb-2">
@@ -87,15 +87,15 @@ function TechRow({
         onMouseEnter={onHover}
         onFocus={onHover}
         onClick={onSelect}
-        className={`flex w-full items-center gap-4 py-3 text-left text-base transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-violet ${
+        className={`flex w-full min-w-0 items-center gap-4 py-3 text-left text-base transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-violet ${
           active ? "bg-surface text-violet-bright" : "text-foreground/85 hover:text-violet-bright"
         }`}
       >
-        <span className="font-mono text-xs text-muted">
+        <span className="shrink-0 font-mono text-xs text-muted">
           {String(index + 1).padStart(2, "0")}
         </span>
-        {item.title}
-        {active && <span className="ml-auto text-violet-bright">&#9668;</span>}
+        <span className="min-w-0 truncate">{item.title}</span>
+        {active && <span className="ml-auto shrink-0 text-violet-bright">&#9668;</span>}
       </button>
     </li>
   );
