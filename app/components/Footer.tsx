@@ -7,10 +7,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-6 py-6 font-mono text-[11px] tracking-widest text-muted sm:px-10">
         <span>
           &copy; {new Date().getFullYear()}{" "}
-          {profile.nameFirst.toUpperCase()} {profile.nameLast.toUpperCase()}{" "}
-          <a href="#" className="ml-2 hover:text-violet-bright">
-            / LEGAL &#8599;
-          </a>
+          {profile.nameFirst.toUpperCase()} {profile.nameLast.toUpperCase()}
         </span>
         <Clock />
       </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { techStack, techStackItemCount, type TechStackItem } from "@/lib/data";
 import SystemCard from "./SystemCard";
+import { useActiveTech } from "./ActiveTechContext";
 
 export default function Stack() {
-  const [activeId, setActiveId] = useState(techStack[0].items[0].id);
+  const { activeId, setActiveId, selectActiveId } = useActiveTech();
 
   const flatItems = techStack.flatMap((group) => group.items);
   const activeItem =
@@ -15,10 +15,10 @@ export default function Stack() {
   return (
     <section id="stack" className="border-b border-border">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
-        <p className="mb-3 font-mono text-xs tracking-widest text-violet">
+        <p className="mb-3 font-mono text-sm tracking-widest text-violet">
           04 / STACK
         </p>
-        <h2 className="mb-12 text-4xl font-black tracking-tight sm:text-5xl">
+        <h2 className="mb-12 text-4xl font-bold tracking-tight sm:text-5xl">
           TOOLS I THINK IN
         </h2>
 
@@ -44,7 +44,8 @@ export default function Stack() {
                         item={item}
                         index={ii}
                         active={active}
-                        onActivate={() => setActiveId(item.id)}
+                        onHover={() => setActiveId(item.id)}
+                        onSelect={() => selectActiveId(item.id)}
                       />
                     );
                   })}
@@ -70,21 +71,23 @@ function TechRow({
   item,
   index,
   active,
-  onActivate,
+  onHover,
+  onSelect,
 }: {
   item: TechStackItem;
   index: number;
   active: boolean;
-  onActivate: () => void;
+  onHover: () => void;
+  onSelect: () => void;
 }) {
   return (
-    <li className="border-b border-border">
+    <li id={`tech-row-${item.id}`} className="border-b border-border">
       <button
         type="button"
-        onMouseEnter={onActivate}
-        onFocus={onActivate}
-        onClick={onActivate}
-        className={`flex w-full items-center gap-4 py-3 text-left text-sm transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-violet ${
+        onMouseEnter={onHover}
+        onFocus={onHover}
+        onClick={onSelect}
+        className={`flex w-full items-center gap-4 py-3 text-left text-base transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-violet ${
           active ? "bg-surface text-violet-bright" : "text-foreground/85 hover:text-violet-bright"
         }`}
       >

@@ -5,12 +5,6 @@ import type { BlogPost, BlogPostInput } from "./blog-types";
 
 const COLLECTION = "posts";
 
-function readingTimeFromContent(content: string): string {
-  const words = content.trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.round(words / 200));
-  return `${minutes} min read`;
-}
-
 // Safety ceiling on unbounded published-post reads. Firestore can't combine
 // where("published") + orderBy("createdAt") without a composite index, so we
 // sort in app code instead — this cap keeps read cost/latency bounded as the
@@ -139,4 +133,4 @@ export async function deletePost(id: string): Promise<void> {
   await db.collection(COLLECTION).doc(id).delete();
 }
 
-export { readingTimeFromContent };
+export { readingTimeFromContent } from "./blog-types";

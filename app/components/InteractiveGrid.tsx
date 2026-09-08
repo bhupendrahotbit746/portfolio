@@ -69,7 +69,7 @@ export default function InteractiveGrid() {
     let rafId: number;
     const render = () => {
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "rgba(139, 92, 246, 0.45)";
+      ctx.fillStyle = "rgba(0, 217, 255, 0.22)";
 
       for (const p of points) {
         const dx = p.baseX - mouse.x;
@@ -94,7 +94,7 @@ export default function InteractiveGrid() {
         ctx.lineTo(p.x + 3, p.y);
         ctx.moveTo(p.x, p.y - 3);
         ctx.lineTo(p.x, p.y + 3);
-        ctx.strokeStyle = "rgba(139, 92, 246, 0.35)";
+        ctx.strokeStyle = "rgba(0, 217, 255, 0.18)";
         ctx.lineWidth = 1;
         ctx.stroke();
       }

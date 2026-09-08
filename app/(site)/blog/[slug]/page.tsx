@@ -8,6 +8,7 @@ import {
 } from "@/lib/blog";
 import { profile } from "@/lib/data";
 import { formatDate } from "@/lib/format-date";
+import MarkdownContent from "@/app/components/MarkdownContent";
 
 export const dynamic = "force-dynamic";
 
@@ -66,7 +67,7 @@ export default async function BlogPostPage({
             &#8592; WRITING
           </Link>
 
-          <p className="mt-8 font-mono text-xs tracking-widest text-violet">
+          <p className="mt-8 font-mono text-sm tracking-widest text-violet">
             B&middot;{String(index).padStart(2, "0")} / {post.category.toUpperCase()}
           </p>
 
@@ -98,9 +99,10 @@ export default async function BlogPostPage({
           )}
 
           <div className="mx-auto mt-14 max-w-2xl">
-            <div className="whitespace-pre-wrap text-base leading-relaxed text-foreground/80 sm:text-lg">
-              {post.content}
-            </div>
+            <MarkdownContent
+              content={post.content}
+              className="prose-blog text-base leading-relaxed text-foreground/80 sm:text-lg"
+            />
           </div>
 
           <div className="mx-auto mt-16 max-w-2xl border-t border-border pt-8">

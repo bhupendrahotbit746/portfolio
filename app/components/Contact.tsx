@@ -5,7 +5,7 @@ export default function Contact() {
     <section id="contact" className="border-b border-border">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:px-10 lg:py-28">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
-          <p className="font-mono text-xs tracking-widest text-violet">
+          <p className="font-mono text-sm tracking-widest text-violet">
             04 / CONTACT
           </p>
           <p className="font-mono text-xs tracking-widest text-muted">
@@ -23,8 +23,21 @@ export default function Contact() {
           </p>
           <a
             href={`mailto:${profile.email}?subject=Let's build something`}
-            className="text-glow mt-2 block break-all text-3xl font-bold text-violet-bright transition-colors hover:text-violet sm:text-5xl"
+            className="text-glow mt-2 flex items-center gap-3 break-all text-xl text-violet-bright transition-colors hover:text-violet sm:text-2xl"
           >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[0.85em] w-[0.85em] shrink-0"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m3 6 9 7 9-7" />
+            </svg>
             {profile.email}
           </a>
         </div>

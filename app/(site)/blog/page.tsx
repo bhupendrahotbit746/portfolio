@@ -37,7 +37,7 @@ export default async function BlogIndexPage() {
             &#8592; HOME
           </Link>
 
-          <p className="mt-8 mb-4 font-mono text-xs tracking-widest text-violet">
+          <p className="mt-8 mb-4 font-mono text-sm tracking-widest text-violet">
             &#9670; WRITING
           </p>
           <h1 className="text-4xl font-black tracking-tight sm:text-5xl">
@@ -64,47 +64,62 @@ export default async function BlogIndexPage() {
                     {year}
                   </p>
 
-                  {yearPosts.map((post) => {
-                    const globalIndex =
-                      posts.findIndex((p) => p.id === post.id) + 1;
-                    return (
-                      <Link
-                        key={post.id}
-                        href={`/blog/${post.slug}`}
-                        className="group relative block border-t border-border px-4 py-7 transition-colors duration-200 ease-out last:border-b hover:bg-surface/60 focus-visible:bg-surface/60 focus-visible:outline-none"
-                      >
-                        <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-violet-bright opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100" />
-                        <span className="pointer-events-none absolute right-0 bottom-0 h-3 w-3 border-b border-r border-violet-bright opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 group-focus-visible:opacity-100" />
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {yearPosts.map((post) => {
+                      const globalIndex =
+                        posts.findIndex((p) => p.id === post.id) + 1;
+                      return (
+                        <Link
+                          key={post.id}
+                          href={`/blog/${post.slug}`}
+                          className="group relative block overflow-hidden rounded-2xl border border-border bg-surface shadow-lg shadow-black/20 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-dim/30 focus-visible:-translate-y-1 focus-visible:outline-none"
+                        >
+                          <div className="aspect-[16/9] w-full overflow-hidden bg-surface-2">
+                            {post.coverImage ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={post.coverImage}
+                                alt=""
+                                className="h-full w-full object-cover opacity-85 transition-opacity duration-200 ease-out group-hover:opacity-100"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center">
+                                <span className="font-mono text-xs tracking-widest text-muted">
+                                  {post.category.toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
 
-                        <span className="font-mono text-xs tracking-widest text-muted">
-                          B&middot;{String(globalIndex).padStart(2, "0")}
-                        </span>
+                          <div className="px-5 py-5">
+                            <span className="font-mono text-xs tracking-widest text-muted">
+                              B&middot;{String(globalIndex).padStart(2, "0")} &middot;{" "}
+                              {post.category.toUpperCase()}
+                            </span>
 
-                        <h2 className="mt-2 text-xl font-bold tracking-tight text-foreground transition-colors duration-200 ease-out group-hover:text-violet-bright sm:text-2xl">
-                          {post.title}
-                        </h2>
+                            <h2 className="mt-2 text-xl font-bold leading-snug tracking-tight text-foreground transition-colors duration-200 ease-out group-hover:text-violet-bright">
+                              {post.title}
+                            </h2>
 
-                        {post.coverImage && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={post.coverImage}
-                            alt=""
-                            className="mt-5 aspect-[16/7] w-full object-cover opacity-80"
-                          />
-                        )}
+                            <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground/75">
+                              {post.description}
+                            </p>
 
-                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/75">
-                          {post.description}
-                        </p>
-
-                        <p className="mt-3 font-mono text-xs tracking-widest text-muted">
-                          {post.category.toUpperCase()} &middot;{" "}
-                          {formatDate(post.createdAt)} &middot;{" "}
-                          {readingTimeFromContent(post.content).toUpperCase()}
-                        </p>
-                      </Link>
-                    );
-                  })}
+                            <div className="mt-4 flex items-center gap-1.5 text-muted">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 7v5l3 3" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                              <span className="font-mono text-[11px] tracking-widest">
+                                {formatDate(post.createdAt)} &middot;{" "}
+                                {readingTimeFromContent(post.content).toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
               ))}
             </div>

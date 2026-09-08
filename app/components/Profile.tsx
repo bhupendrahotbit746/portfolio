@@ -25,7 +25,7 @@ export default function Profile() {
       <div className="mx-auto min-h-[calc(100vh-6rem)] max-w-6xl px-6 py-12 sm:px-10 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 xl:gap-20">
           <div className="pt-6 lg:pt-16">
-            <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.35em] text-violet-bright">
+            <p className="mb-5 font-mono text-sm uppercase tracking-[0.35em] text-violet-bright">
               01 / PROFILE
             </p>
             <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-black leading-[0.9] tracking-[-0.03em] text-foreground">
